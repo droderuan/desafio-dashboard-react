@@ -3,6 +3,11 @@ import { Layout } from 'antd';
 
 const { Content: AntContent } = Layout;
 
+export const MainLayout = styled(Layout)`
+  min-height: 100vh;
+  display: flex;
+`;
+
 export const Logo = styled.div`
   height: 32px;
   margin: 16px;
@@ -20,6 +25,8 @@ export const Content = styled(AntContent)`
   flex: 1;
   height: 100vh;
   padding: 32px;
+
+  background-color: #030852;
 `;
 
 export const ContentContainer = styled.div`
@@ -30,4 +37,11 @@ export const ContentContainer = styled.div`
 
   background-color: white;
   border-radius: 10px;
+`;
+
+export const EmptyContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Layout, Menu, Typography, Button, Empty, notification } from 'antd';
-import { PlusSquareOutlined, LoadingOutlined } from '@ant-design/icons';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Layout, Menu, Typography, Button, Empty } from 'antd';
+import { PlusSquareOutlined } from '@ant-design/icons';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import api from '../../services/api';
 
@@ -12,15 +12,17 @@ import {
   ICreateCompanyResponseDTO,
 } from '../../dtos/ICreateCompany';
 
+import Loading from '../../components/Loading';
 import AddCompanyModal from '../../components/AddCompanyModal';
-
 import ContentRoutes from '../../routes/ContentRoutes';
 
 import {
+  MainLayout,
   Logo,
   AsideAddButtonContainer,
   Content,
   ContentContainer,
+  EmptyContainer,
 } from './styles';
 
 interface Company {
@@ -38,20 +40,35 @@ const Home: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const history = useHistory();
-  const { url } = useRouteMatch();
+  const location = useLocation();
+
+  const fetchCompanies = useCallback(() => {
+    setLoading(true);
+    api
+      .get('/companies/dashboard/all')
+      .then(response => {
+        setCompanies(response.data.companies);
+
+        if (response.data.companies.length >= 1) {
+          history.push(`/company/${response.data.companies[0]._id}`);
+        }
+
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log(error);
+        setLoading(false);
+      });
+  }, [history]);
 
   useEffect(() => {
-    setLoading(true);
-    api.get('/companies/dashboard/all').then(response => {
-      setCompanies(response.data.companies);
-      setLoading(false);
-    });
-  }, []);
+    fetchCompanies();
+  }, [fetchCompanies]);
 
   const toggleModal = useCallback(() => setVisible(old => !old), []);
 
-  const handleAddCompany = useCallback(async (values: ICreateCompanyDTO) => {
-    try {
+  const handleAddCompany = useCallback(
+    async (values: ICreateCompanyDTO) => {
       api
         .post<ICreateCompanyResponseDTO>('/company', { name: values.name })
         .then(response => {
@@ -60,6 +77,7 @@ const Home: React.FC = () => {
             type: 'sucess',
             message: `A empresa ${response.data.name} foi adicionada com sucesso!`,
           });
+          fetchCompanies();
         })
         .catch(error => {
           if (error.response.status === 400) {
@@ -71,34 +89,19 @@ const Home: React.FC = () => {
             });
           }
         });
-    } catch (err) {
-      notification.open({
-        key: '',
-        message: `Não foi possível adicionar uma empresa nova. Verifique a conexão e tente novamente.`,
-        placement: 'bottomLeft',
-        duration: 2,
-      });
-    }
-  }, []);
+    },
+    [fetchCompanies],
+  );
 
   return (
     <>
-      <Layout style={{ minHeight: '100vh', display: 'flex' }}>
+      <MainLayout>
         <Sider theme="light">
           <Logo>
             <Title level={3}>Tractian</Title>
           </Logo>
           {loading ? (
-            <div
-              style={{
-                display: 'flex',
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <LoadingOutlined spin style={{ fontSize: '32px' }} />
-            </div>
+            <Loading size={32} />
           ) : (
             <>
               <AsideAddButtonContainer>
@@ -133,28 +136,21 @@ const Home: React.FC = () => {
         </Sider>
 
         <Layout style={{ display: 'flex' }}>
-          {loading ? (
-            <div
-              style={{
-                display: 'flex',
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <LoadingOutlined spin style={{ fontSize: '56px' }} />
-            </div>
-          ) : companies.length >= 1 ? (
-            <Content>
-              <ContentContainer>
+          <Content className="background-content">
+            <ContentContainer>
+              {loading ? (
+                <Loading size={58} />
+              ) : companies.length >= 1 ? (
                 <ContentRoutes />
-              </ContentContainer>
-            </Content>
-          ) : (
-            <Empty />
-          )}
+              ) : (
+                <EmptyContainer>
+                  <Empty description="Parece que não há nenhuma empresa cadastrada" />
+                </EmptyContainer>
+              )}
+            </ContentContainer>
+          </Content>
         </Layout>
-      </Layout>
+      </MainLayout>
     </>
   );
 };

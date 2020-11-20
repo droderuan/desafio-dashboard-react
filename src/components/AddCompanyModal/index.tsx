@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Input, Radio } from 'antd';
+import React from 'react';
+import { Modal, Form, Input } from 'antd';
 
 interface Values {
   name: string;
 }
 
-interface CollectionCreateFormProps {
+interface AddCompanyFormProps {
   visible: boolean;
   onCreate: (values: Values) => void;
   onCancel: () => void;
 }
 
-const AddCompanyModal: React.FC<CollectionCreateFormProps> = ({
+const AddCompanyModal: React.FC<AddCompanyFormProps> = ({
   visible,
   onCreate,
   onCancel,
