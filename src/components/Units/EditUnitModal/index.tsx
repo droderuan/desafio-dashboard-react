@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Modal, Form, Input, Button, Popconfirm } from 'antd';
 import { useCompany } from '../../../hooks/Company';
 
@@ -10,43 +10,35 @@ interface Values {
 
 interface EditUnitFormProps {
   visible: boolean;
-  unitId: string;
-  onEdit: (values: Values) => void;
+  unit: { _id: string; name: string };
+  onEdit: (values: Values) => Promise<void>;
   closeModal: () => void;
   onDelete: () => void;
 }
 
 const EditUnitModal: React.FC<EditUnitFormProps> = ({
   visible,
-  unitId,
+  unit,
   onEdit,
   closeModal,
   onDelete,
 }) => {
   const [form] = Form.useForm();
-  const { company } = useCompany();
 
-  const unit = useMemo(() => {
-    const findUnit = company.units.find(
-      unitToCheck => unitToCheck._id === unitId,
-    );
+  const [loading, setLoading] = useState(false);
 
-    if (!findUnit) throw new Error('Unit does not exist');
-
-    return findUnit;
-  }, [company.units, unitId]);
-
-  const handleDeleteUnit = useCallback(() => {
+  const handleDeleteCompany = useCallback(() => {
     onDelete();
   }, [onDelete]);
 
   const handleSubmitForm = useCallback(() => {
+    setLoading(true);
     form
       .validateFields()
       .then(values => {
         form.resetFields();
 
-        onEdit(values as Values);
+        onEdit(values as Values).finally(() => setLoading(false));
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -56,18 +48,19 @@ const EditUnitModal: React.FC<EditUnitFormProps> = ({
   return (
     <Modal
       visible={visible}
-      title="Editar nome da empresa"
+      title="Editar nome da unidade"
       okText="Editar"
       cancelText="Cancelar"
       onCancel={closeModal}
       onOk={handleSubmitForm}
+      okButtonProps={{ loading }}
     >
       <HeaderModal>
         <Popconfirm
-          title="Tem certeza que deseja apagar?"
+          title="Apagar"
           okText="Sim"
           cancelText="Não"
-          onConfirm={handleDeleteUnit}
+          onConfirm={handleDeleteCompany}
         >
           <Button danger type="primary">
             Apagar
@@ -82,7 +75,7 @@ const EditUnitModal: React.FC<EditUnitFormProps> = ({
           rules={[
             {
               required: true,
-              message: 'Digite o nome da empresa',
+              message: 'Digite o nome da unidade',
             },
           ]}
         >

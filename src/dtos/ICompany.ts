@@ -29,6 +29,7 @@ export interface ICompany {
       description: string;
       state: string;
       healthscore: number;
+      nextMaintanceDate: string;
       avgDecreaseHealthScore: number;
       unit: string;
       responsible: {

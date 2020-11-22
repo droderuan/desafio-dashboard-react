@@ -24,8 +24,8 @@ const Users: React.FC = () => {
   );
 
   const handleCreateUser = useCallback(
-    (values: ICreateUserDTO) => {
-      api
+    (values: ICreateUserDTO): Promise<void> => {
+      return api
         .post(`/company/${company._id}/users`, {
           name: values.name,
           email: values.email,

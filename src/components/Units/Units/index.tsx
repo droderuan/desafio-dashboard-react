@@ -8,17 +8,17 @@ import createNotification from '../../../utils/CreateNotification';
 import { ICreateUnitDTO } from '../../../dtos/ICreateUnit';
 
 import CreateUnitModal from '../CreateUnitModal';
+import UnitData from '../UnitData';
 
 import { Container, SiderHeader, AsideAddButton, UnitContent } from './styles';
 
 const Dashboard: React.FC = () => {
   const { Sider } = Layout;
-  const { SubMenu } = Menu;
   const { Title } = Typography;
   const { company, fetchCompany } = useCompany();
 
   const [createUnitModalVisible, setUnitModalVisibleVisible] = useState(false);
-  const [whichContent, setWhichContent] = useState<'assets' | 'info'>('assets');
+  const [unitId, setUnitId] = useState(company.units[0]._id);
 
   const toggleModal = useCallback(
     () => setUnitModalVisibleVisible(old => !old),
@@ -26,8 +26,8 @@ const Dashboard: React.FC = () => {
   );
 
   const handleCreateUnit = useCallback(
-    (values: ICreateUnitDTO) => {
-      api
+    (values: ICreateUnitDTO): Promise<void> => {
+      return api
         .post(`/company/${company._id}/units`, { ...values })
         .then(() => {
           createNotification({
@@ -51,8 +51,8 @@ const Dashboard: React.FC = () => {
     [toggleModal, company._id, fetchCompany],
   );
 
-  const handleContent = useCallback((value: 'assets' | 'info') => {
-    setWhichContent(value);
+  const handleContent = useCallback((id: string) => {
+    setUnitId(id);
   }, []);
 
   return (
@@ -72,20 +72,9 @@ const Dashboard: React.FC = () => {
 
           <Menu theme="light" mode="inline">
             {company.units.map(unit => (
-              <SubMenu key={`sub${unit._id}`} title={unit.name}>
-                <Menu.Item
-                  key={`1-${unit._id}`}
-                  onClick={() => handleContent('info')}
-                >
-                  Dados
-                </Menu.Item>
-                <Menu.Item
-                  key={`2-${unit._id}`}
-                  onClick={() => handleContent('assets')}
-                >
-                  Ativos
-                </Menu.Item>
-              </SubMenu>
+              <Menu.Item key={unit._id} onClick={() => handleContent(unit._id)}>
+                {unit.name}
+              </Menu.Item>
             ))}
           </Menu>
           <CreateUnitModal
@@ -95,8 +84,7 @@ const Dashboard: React.FC = () => {
           />
         </Sider>
         <UnitContent>
-          {whichContent === 'info' && <h1>info</h1>}
-          {whichContent === 'assets' && <h1>assets</h1>}
+          <UnitData unitId={unitId} />
         </UnitContent>
       </Layout>
     </Container>

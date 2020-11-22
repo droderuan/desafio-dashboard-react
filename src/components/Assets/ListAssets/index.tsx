@@ -127,6 +127,7 @@ const ListAssets: React.FC<ListAssetsProps> = ({
         size="large"
         pagination={{
           pageSize: 4,
+          position: 'top',
         }}
         style={{ height: '100%' }}
         dataSource={parseAssets}

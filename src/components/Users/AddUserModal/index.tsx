@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Modal, Form, Input } from 'antd';
 
 interface Values {
@@ -8,7 +8,7 @@ interface Values {
 
 interface AddUserFormProps {
   visible: boolean;
-  onCreate: (values: Values) => void;
+  onCreate: (values: Values) => Promise<void>;
   closeModal: () => void;
 }
 
@@ -19,11 +19,15 @@ const AddUserModal: React.FC<AddUserFormProps> = ({
 }) => {
   const [form] = Form.useForm();
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmitForm = useCallback(() => {
+    setLoading(true);
     form
       .validateFields()
       .then(values => {
-        onCreate(values as Values);
+        onCreate(values as Values).finally(() => setLoading(false));
+
         form.resetFields();
       })
       .catch(info => {
@@ -39,6 +43,7 @@ const AddUserModal: React.FC<AddUserFormProps> = ({
       cancelText="Cancelar"
       onCancel={closeModal}
       onOk={handleSubmitForm}
+      okButtonProps={{ loading }}
     >
       <Form form={form} layout="vertical" name="form_in_modal">
         <Form.Item

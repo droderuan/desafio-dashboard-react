@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { PageHeader, Form, Input, Select, Button } from 'antd';
 import { useCompany } from '../../../hooks/Company';
 import api from '../../../services/api';
@@ -15,6 +15,8 @@ interface CreateAssetProps {
 const CreateAsset: React.FC<CreateAssetProps> = ({ back }) => {
   const [form] = Form.useForm();
 
+  const [loading, setLoading] = useState(false);
+
   const { TextArea } = Input;
   const { Option } = Select;
 
@@ -29,6 +31,7 @@ const CreateAsset: React.FC<CreateAssetProps> = ({ back }) => {
   };
 
   const handleSubmitForm = useCallback(() => {
+    setLoading(true);
     form
       .validateFields()
       .then(values => {
@@ -56,7 +59,8 @@ const CreateAsset: React.FC<CreateAssetProps> = ({ back }) => {
               message: `Ocorreu um error ao tentar criar a unidade. Por favor, tente novamente.`,
               type: 'error',
             });
-          });
+          })
+          .finally(() => setLoading(false));
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -153,6 +157,7 @@ const CreateAsset: React.FC<CreateAssetProps> = ({ back }) => {
                 type="primary"
                 htmlType="submit"
                 onClick={handleSubmitForm}
+                loading={loading}
               >
                 Criar
               </Button>

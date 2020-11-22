@@ -29,6 +29,7 @@ export interface IRequestCompany {
       description: string;
       state: string;
       healthscore: number;
+      nextMaintanceDate: string;
       avgDecreaseHealthScore: number;
       unit: string;
       responsible: {

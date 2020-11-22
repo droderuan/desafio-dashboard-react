@@ -46,6 +46,7 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingResponsible, setIsChangingResponsible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { TextArea } = Input;
   const { Option } = Select;
@@ -117,6 +118,7 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
   );
 
   const handleSubmitForm = useCallback(() => {
+    setLoading(true);
     form
       .validateFields()
       .then(values => {
@@ -138,13 +140,13 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
             back();
           })
           .catch(error => {
-            console.log(error);
             createNotification({
               key: 'error on update asset',
               message: `Ocorreu um error ao tentar atualizar o ativo. Por favor, tente novamente.`,
               type: 'error',
             });
-          });
+          })
+          .finally(() => setLoading(false));
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -152,6 +154,7 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
   }, [company._id, form, fetchCompany, back, asset._id]);
 
   const handleChangeResponsible = useCallback(() => {
+    setLoading(true);
     api
       .patch(`/company/${company._id}/assets/${asset._id}/responsible`, {
         responsibleId,
@@ -174,7 +177,8 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
           message: `Ocorreu um error ao tentar mudar o responsável. Por favor, tente novamente.`,
           type: 'error',
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }, [company._id, form, fetchCompany, back, asset._id, responsibleId]);
 
   return (
@@ -206,6 +210,14 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
               value={unit ? unit.name : 'Sem unidade definida'}
               prefix={<HomeOutlined />}
             />
+            <Statistic
+              title="Próxima manutenção estipulada"
+              value={
+                asset.nextMaintanceDate
+                  ? asset.nextMaintanceDate
+                  : 'Dados insuficientes'
+              }
+            />
           </SiderStatistics>
         </Sider>
         <Layout className="background-white">
@@ -220,11 +232,14 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
                   checkedChildren="Editando"
                   unCheckedChildren="Editar"
                   onChange={() => setIsEditing(old => !old)}
+                  style={{ marginRight: '16px' }}
+                  disabled={isChangingResponsible}
                 />
                 <Switch
                   checkedChildren="Alterando responsável"
                   unCheckedChildren="Alterar responsável"
                   onChange={() => setIsChangingResponsible(old => !old)}
+                  disabled={isEditing}
                 />
               </ContentHeader>
               {isChangingResponsible ? (
@@ -251,6 +266,7 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
                     type="primary"
                     htmlType="submit"
                     onClick={handleChangeResponsible}
+                    loading={loading}
                   >
                     Confirmar
                   </Button>
@@ -379,16 +395,18 @@ const DisplayAsset: React.FC<DisplayAssetsProps> = ({ assetId, back }) => {
                         ))}
                       </Select>
                     </Form.Item>
-
-                    <Form.Item {...tailLayout}>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        onClick={handleSubmitForm}
-                      >
-                        Confirmar
-                      </Button>
-                    </Form.Item>
+                    {isEditing && (
+                      <Form.Item {...tailLayout}>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          onClick={handleSubmitForm}
+                          loading={loading}
+                        >
+                          Confirmar
+                        </Button>
+                      </Form.Item>
+                    )}
                   </Form>
                 </>
               )}
