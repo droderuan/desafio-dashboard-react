@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Layout, Menu, Typography, Button } from 'antd';
+import { Layout, Menu, Typography, Button, Empty } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import api from '../../../services/api';
 import { useCompany } from '../../../hooks/Company';
@@ -18,7 +18,7 @@ const Dashboard: React.FC = () => {
   const { company, fetchCompany } = useCompany();
 
   const [createUnitModalVisible, setUnitModalVisibleVisible] = useState(false);
-  const [unitId, setUnitId] = useState(company.units[0]._id);
+  const [unitId, setUnitId] = useState<string>('');
 
   const toggleModal = useCallback(
     () => setUnitModalVisibleVisible(old => !old),
@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
           />
         </Sider>
         <UnitContent>
-          <UnitData unitId={unitId} />
+          {unitId ? <UnitData unitId={unitId} /> : <Empty />}
         </UnitContent>
       </Layout>
     </Container>
