@@ -7,7 +7,7 @@ Faça o clone do repositório e instale todas as dependências.
 
 Com yarn:
 ```
-git clone https://github.com/droderuan/desafio-tractian-web.git && cd desafio-tractian-web && yarn add
+git clone https://github.com/droderuan/desafio-tractian-web.git && cd desafio-tractian-web && yarn
 ```
 Com npm: 
 ```
