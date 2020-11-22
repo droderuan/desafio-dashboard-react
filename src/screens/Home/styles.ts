@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Layout } from 'antd';
+import { cyan } from '@ant-design/colors';
 
 const { Content: AntContent } = Layout;
 
@@ -26,7 +27,7 @@ export const Content = styled(AntContent)`
   height: 100vh;
   padding: 32px;
 
-  background-color: #bfbfbf;
+  background-color: ${cyan[4]};
 `;
 
 export const ContentContainer = styled.div`

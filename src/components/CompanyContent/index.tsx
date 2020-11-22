@@ -39,8 +39,8 @@ const CompanyContent: React.FC = () => {
   const toggleModal = useCallback(() => setEditModalVisible(old => !old), []);
 
   const handleEditCompany = useCallback(
-    ({ name }: IEditCompanyResponseDTO) => {
-      api
+    ({ name }: IEditCompanyResponseDTO): Promise<void> => {
+      return api
         .put(`/company/${companyId}`, { name })
         .then(() => {
           fetchCompany(companyId);

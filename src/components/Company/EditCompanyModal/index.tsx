@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Modal, Form, Input, Button, Popconfirm } from 'antd';
 import { useCompany } from '../../../hooks/Company';
 
@@ -10,7 +10,7 @@ interface Values {
 
 interface EditCompanyFormProps {
   visible: boolean;
-  onEdit: (values: Values) => void;
+  onEdit: (values: Values) => Promise<void>;
   closeModal: () => void;
   onDelete: () => void;
 }
@@ -24,17 +24,20 @@ const EditCompanyModal: React.FC<EditCompanyFormProps> = ({
   const [form] = Form.useForm();
   const { company } = useCompany();
 
+  const [loading, setLoading] = useState(false);
+
   const handleDeleteCompany = useCallback(() => {
     onDelete();
   }, [onDelete]);
 
   const handleSubmitForm = useCallback(() => {
+    setLoading(true);
     form
       .validateFields()
       .then(values => {
         form.resetFields();
 
-        onEdit(values as Values);
+        onEdit(values as Values).finally(() => setLoading(false));
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -49,6 +52,7 @@ const EditCompanyModal: React.FC<EditCompanyFormProps> = ({
       cancelText="Cancelar"
       onCancel={closeModal}
       onOk={handleSubmitForm}
+      okButtonProps={{ loading }}
     >
       <HeaderModal>
         <Popconfirm

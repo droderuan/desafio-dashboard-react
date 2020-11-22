@@ -66,8 +66,8 @@ const Home: React.FC = () => {
   const toggleModal = useCallback(() => setVisible(old => !old), []);
 
   const handleAddCompany = useCallback(
-    async (values: ICreateCompanyDTO) => {
-      api
+    async (values: ICreateCompanyDTO): Promise<void> => {
+      return api
         .post<ICreateCompanyResponseDTO>('/company', { name: values.name })
         .then(response => {
           createNotification({
