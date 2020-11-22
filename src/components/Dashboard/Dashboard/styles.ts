@@ -17,4 +17,8 @@ export const HeaderContent = styled.div`
 export const ChartsContainer = styled(Content)`
   display: grid;
   grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 1300px) {
+    grid-template-columns: 1fr;
+  }
 `;
