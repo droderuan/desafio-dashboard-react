@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Modal, Form, Input, Button, Popconfirm } from 'antd';
-import { useCompany } from '../../hooks/Company';
+import { useCompany } from '../../../hooks/Company';
 
 import { HeaderModal } from './styles';
 
@@ -11,14 +11,14 @@ interface Values {
 interface EditCompanyFormProps {
   visible: boolean;
   onEdit: (values: Values) => void;
-  onCancel: () => void;
+  closeModal: () => void;
   onDelete: () => void;
 }
 
 const EditCompanyModal: React.FC<EditCompanyFormProps> = ({
   visible,
   onEdit,
-  onCancel,
+  closeModal,
   onDelete,
 }) => {
   const [form] = Form.useForm();
@@ -28,24 +28,27 @@ const EditCompanyModal: React.FC<EditCompanyFormProps> = ({
     onDelete();
   }, [onDelete]);
 
+  const handleSubmitForm = useCallback(() => {
+    form
+      .validateFields()
+      .then(values => {
+        form.resetFields();
+
+        onEdit(values as Values);
+      })
+      .catch(info => {
+        console.log('Validate Failed:', info);
+      });
+  }, [form, onEdit]);
+
   return (
     <Modal
       visible={visible}
-      title="Adicionar uma nova empresa"
+      title="Editar nome da empresa"
       okText="Editar"
       cancelText="Cancelar"
-      onCancel={onCancel}
-      onOk={() => {
-        form
-          .validateFields()
-          .then(values => {
-            form.resetFields();
-            onEdit(values as Values);
-          })
-          .catch(info => {
-            console.log('Validate Failed:', info);
-          });
-      }}
+      onCancel={closeModal}
+      onOk={handleSubmitForm}
     >
       <HeaderModal>
         <Popconfirm

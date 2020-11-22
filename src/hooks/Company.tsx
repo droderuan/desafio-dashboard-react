@@ -1,32 +1,11 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import api from '../services/api';
 
+import { ICompany } from '../dtos/ICompany';
 import { IRequestCompany } from '../dtos/IRequestCompany';
 
-export interface Company {
-  _id: string;
-  name: string;
-  employeers: { name: string }[];
-  units: {
-    name: string;
-    countAssets: number;
-    assets: {
-      name: string;
-      type: string;
-      modelName: string;
-      description: string;
-      state: string;
-      healthscore: number;
-      image: {
-        url: string;
-        name: string;
-      };
-    }[];
-  }[];
-}
-
 interface CompanyContextData {
-  company: Company;
+  company: ICompany;
   loading: boolean;
   fetchCompany: (companyId: string) => void;
 }
@@ -36,7 +15,7 @@ const CompanyContext = createContext<CompanyContextData>(
 );
 
 export const CompanyProvider: React.FC = ({ children }) => {
-  const [company, setCompany] = useState<Company>({} as Company);
+  const [company, setCompany] = useState<ICompany>({} as ICompany);
   const [loading, setLoading] = useState(false);
 
   const fetchCompany = useCallback((companyId: string) => {
@@ -47,7 +26,7 @@ export const CompanyProvider: React.FC = ({ children }) => {
         setCompany(response.data);
         setLoading(false);
       })
-      .catch(error => setLoading(false));
+      .catch(() => setLoading(false));
   }, []);
 
   return (

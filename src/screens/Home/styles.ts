@@ -26,7 +26,7 @@ export const Content = styled(AntContent)`
   height: 100vh;
   padding: 32px;
 
-  background-color: #030852;
+  background-color: #bfbfbf;
 `;
 
 export const ContentContainer = styled.div`

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory, Link } from 'react-router-dom';
 import { Layout, Menu, Typography, Button, Empty } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
-import { useHistory, useLocation } from 'react-router-dom';
 
 import api from '../../services/api';
 
@@ -13,7 +13,7 @@ import {
 } from '../../dtos/ICreateCompany';
 
 import Loading from '../../components/Loading';
-import AddCompanyModal from '../../components/AddCompanyModal';
+import AddCompanyModal from '../../components/Company/AddCompanyModal';
 import ContentRoutes from '../../routes/ContentRoutes';
 
 import {
@@ -40,7 +40,6 @@ const Home: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const history = useHistory();
-  const location = useLocation();
 
   const fetchCompanies = useCallback(() => {
     setLoading(true);
@@ -55,8 +54,7 @@ const Home: React.FC = () => {
 
         setLoading(false);
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
         setLoading(false);
       });
   }, [history]);
@@ -88,9 +86,10 @@ const Home: React.FC = () => {
               duration: 2,
             });
           }
-        });
+        })
+        .finally(() => toggleModal());
     },
-    [fetchCompanies],
+    [fetchCompanies, toggleModal],
   );
 
   return (
@@ -101,7 +100,7 @@ const Home: React.FC = () => {
             <Title level={3}>Tractian</Title>
           </Logo>
           {loading ? (
-            <Loading size={32} />
+            <Loading size="small" />
           ) : (
             <>
               <AsideAddButtonContainer>
@@ -113,15 +112,13 @@ const Home: React.FC = () => {
                 />
               </AsideAddButtonContainer>
 
-              <Menu theme="light">
+              <Menu
+                theme="light"
+                defaultSelectedKeys={companies[0] && [companies[0]._id]}
+              >
                 {companies.map(company => (
-                  <Menu.Item
-                    key={company._id}
-                    onClick={() => {
-                      history.push(`/company/${company._id}`);
-                    }}
-                  >
-                    {company.name}
+                  <Menu.Item key={company._id}>
+                    <Link to={`/company/${company._id}`}>{company.name}</Link>
                   </Menu.Item>
                 ))}
               </Menu>
@@ -131,7 +128,7 @@ const Home: React.FC = () => {
           <AddCompanyModal
             visible={visible}
             onCreate={handleAddCompany}
-            onCancel={() => setVisible(false)}
+            closeModal={() => setVisible(false)}
           />
         </Sider>
 
@@ -139,7 +136,7 @@ const Home: React.FC = () => {
           <Content className="background-content">
             <ContentContainer>
               {loading ? (
-                <Loading size={58} />
+                <Loading size="large" />
               ) : companies.length >= 1 ? (
                 <ContentRoutes />
               ) : (

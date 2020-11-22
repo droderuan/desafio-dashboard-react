@@ -1,4 +1,4 @@
-export interface IRequestCompany {
+export interface ICompany {
   _id: string;
   name: string;
   employeers: {

@@ -1,17 +1,16 @@
 import React from 'react';
-import {} from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 import { Container } from './styles';
 
 interface LoadingProps {
-  size?: number;
+  size?: 'small' | 'large' | 'default';
 }
 
-const Loading: React.FC<LoadingProps> = ({ size = 32 }) => {
+const Loading: React.FC<LoadingProps> = ({ size = 'default' }) => {
   return (
     <Container>
-      <LoadingOutlined spin style={{ fontSize: `${size}px` }} />
+      <Spin tip="Carregando" size={size} />
     </Container>
   );
 };

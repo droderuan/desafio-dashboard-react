@@ -4,6 +4,7 @@ import { Layout } from 'antd';
 const { Content } = Layout;
 
 export const Container = styled.div`
+  width: 100%;
   .background-white {
     background-color: white;
   }
@@ -14,7 +15,6 @@ export const HeaderContent = styled.div`
 `;
 
 export const ChartsContainer = styled(Content)`
-  flex: 1;
-  height: 100%;
-  background-color: #8d8d8d;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 `;

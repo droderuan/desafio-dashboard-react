@@ -1,17 +1,14 @@
 import styled from 'styled-components';
+import { Layout } from 'antd';
+
+const { Content } = Layout;
 
 export const Container = styled.div`
   border-radius: 4px;
   min-height: 100%;
-
-  .background-white {
-    background-color: white;
-  }
 `;
 
-export const HeaderContent = styled.div`
-  padding-top: 16px;
-`;
+export const HeaderContent = styled.div``;
 
 export const SiderHeader = styled.div`
   height: 32px;
@@ -31,4 +28,8 @@ export const CardContainer = styled.div`
   .ant-tabs-content {
     margin-top: -16px;
   }
+`;
+
+export const UnitContent = styled(Content)`
+  flex: 1;
 `;
