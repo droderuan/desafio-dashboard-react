@@ -1,6 +1,6 @@
 # Desafio Tractian Front-End
 
-Projeto desenvolvido para o desafio de estágio da Tractian. 
+Projeto desenvolvido para o desafio de estágio da Tractian. O site pode ser acessado através deste link: https://desafio-tractian-ruan-web.herokuapp.com/
 
 ### Como executar
 Faça o clone do repositório e instale todas as dependências.
