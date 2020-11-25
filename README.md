@@ -1,6 +1,6 @@
 # Desafio Dashboard Front-End
 
-Projeto desenvolvido para um desafio de estágio. O site pode ser acessado através deste link: https://desafio-tractian-ruan-web.herokuapp.com/
+Projeto desenvolvido para um desafio de estágio. O site pode ser acessado através deste link: https://desafio-dashboard-ruan-react.herokuapp.com/
 
 ### Como executar
 Faça o clone do repositório e instale todas as dependências.
