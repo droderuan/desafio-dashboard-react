@@ -1,17 +1,17 @@
-# Desafio Tractian Front-End
+# Desafio Dashboard Front-End
 
-Projeto desenvolvido para o desafio de estágio da Tractian. O site pode ser acessado através deste link: https://desafio-tractian-ruan-web.herokuapp.com/
+Projeto desenvolvido para um desafio de estágio. O site pode ser acessado através deste link: https://desafio-tractian-ruan-web.herokuapp.com/
 
 ### Como executar
 Faça o clone do repositório e instale todas as dependências.
 
 Com yarn:
 ```
-git clone https://github.com/droderuan/desafio-tractian-web.git && cd desafio-tractian-web && yarn
+git clone https://github.com/droderuan/desafio-dashboard-react.git && cd desafio-tractian-web && yarn
 ```
 Com npm: 
 ```
-git clone https://github.com/droderuan/desafio-tractian-web.git && cd desafio-tractian-web && npm install
+git clone https://github.com/droderuan/desafio-dashboard-react.git && cd desafio-tractian-web && npm install
 ```
 
 Crie um arquivo **.env** na raiz do projeto e adicione a seguinte variável:
